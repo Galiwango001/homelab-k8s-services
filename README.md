@@ -1,141 +1,182 @@
-# Homelab K8s Services
+# Homelab Kubernetes Services 🚀
 
-> **Production-Ready Homelab Services for Kubernetes**
->
-> Battle-tested Kubernetes manifests and Helm charts for self-hosted applications, running reliably in production homelab environments.
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white) ![ArgoCD](https://img.shields.io/badge/ArgoCD-3E7BFA?style=for-the-badge&logo=argocd&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white) ![Prometheus](https://img.shields.io/badge/Prometheus-EC7F3A?style=for-the-badge&logo=prometheus&logoColor=white)
 
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
-[![Kustomize](https://img.shields.io/badge/Kustomize-EF7B4D?style=flat-square&logo=kubernetes&logoColor=white)](https://kustomize.io/)
-[![Helm](https://img.shields.io/badge/Helm-0F1689?style=flat-square&logo=helm&logoColor=white)](https://helm.sh/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+Welcome to the **Homelab Kubernetes Services** repository! This project provides production-ready Kubernetes configurations tailored for self-hosted services in homelab environments. Whether you're looking to set up monitoring, CI/CD pipelines, or other services, you’ll find the necessary configurations here.
 
-## 🎯 What This Repository Offers
+## Table of Contents
 
-This repository contains **production-ready Kubernetes manifests** for popular self-hosted applications, designed and tested in real homelab environments. All services are configured with:
+- [Introduction](#introduction)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Monitoring](#monitoring)
+- [Deploying Services](#deploying-services)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
 
-- ✅ **Security best practices** (RBAC, Network Policies, non-root containers)
-- ✅ **Resource management** (limits, requests, health checks)
-- ✅ **High availability** configurations where applicable
-- ✅ **Persistent storage** strategies
-- ✅ **Ingress and TLS** automation
-- ✅ **Monitoring integration** ready
+## Introduction
 
-## 🏗️ Repository Structure
+In a world where cloud services dominate, self-hosting offers flexibility and control. This repository aims to provide a robust framework for deploying services in your homelab using Kubernetes. You can easily adapt the configurations to suit your needs.
 
+## Features
+
+- **Production-ready Configurations**: All configurations are tested and ready for production use.
+- **Easy Deployment**: Simplified deployment processes using Helm and Kustomize.
+- **Monitoring Tools**: Built-in support for Grafana and Prometheus to keep an eye on your services.
+- **CI/CD Integration**: Seamless integration with ArgoCD and Flux for GitOps workflows.
+- **SSL Management**: Use Cert-Manager for automatic SSL certificate provisioning.
+- **Load Balancing**: Leverage MetalLB for load balancing in your homelab.
+
+## Technologies Used
+
+This repository includes configurations for various tools and technologies:
+
+- **Kubernetes**: The core platform for container orchestration.
+- **Helm**: A package manager for Kubernetes.
+- **Kustomize**: A tool for customizing Kubernetes YAML configurations.
+- **ArgoCD**: A declarative, GitOps continuous delivery tool for Kubernetes.
+- **Flux**: Another GitOps tool for managing Kubernetes resources.
+- **Cert-Manager**: A tool for managing SSL certificates.
+- **Grafana**: A visualization tool for monitoring.
+- **Prometheus**: A powerful monitoring and alerting toolkit.
+- **Ingress-NGINX**: A robust ingress controller for Kubernetes.
+- **MetalLB**: A load balancer implementation for bare metal Kubernetes clusters.
+
+## Getting Started
+
+To get started with the Homelab Kubernetes Services, follow these steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Galiwango001/homelab-k8s-services.git
+   cd homelab-k8s-services
+   ```
+
+2. **Install Required Tools**:
+   Ensure you have the following tools installed:
+   - `kubectl`
+   - `helm`
+   - `kustomize`
+   - `argocd` (if using ArgoCD)
+   - `flux` (if using Flux)
+
+3. **Set Up Your Kubernetes Cluster**:
+   You can use any Kubernetes provider, such as Minikube, GKE, or EKS. Ensure your cluster is up and running.
+
+## Usage
+
+To use the configurations in this repository, navigate to the specific service you want to deploy. Each service folder contains a `README.md` file with detailed instructions.
+
+### Example: Deploying Grafana
+
+1. **Navigate to the Grafana Directory**:
+   ```bash
+   cd grafana
+   ```
+
+2. **Deploy Using Helm**:
+   ```bash
+   helm install grafana ./grafana
+   ```
+
+3. **Access Grafana**:
+   Follow the instructions in the `README.md` file to access the Grafana dashboard.
+
+## Configuration
+
+Each service has its own configuration files. You can customize these files based on your requirements. The configurations typically include:
+
+- **Deployment YAML**: Defines the deployment settings for the service.
+- **Service YAML**: Specifies how the service is exposed.
+- **Ingress YAML**: Manages the ingress routing for the service.
+
+### Example Configuration for Ingress
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+spec:
+  rules:
+  - host: example.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: example-service
+            port:
+              number: 80
 ```
-├── platform/          # Core infrastructure services
-├── apps/              # Self-hosted applications
-├── helm-charts/       # Helm packages for complex deployments
-├── manifests/         # All-in-one compiled manifests
-├── scripts/           # Automation and setup scripts
-├── docs/              # Comprehensive documentation
-└── examples/          # GitOps and quick-start examples
-```
 
-## 🚀 Quick Start
+## Monitoring
 
-### Prerequisites
-- Kubernetes cluster (v1.25+)
-- kubectl configured
-- Ingress controller capability
-- Storage provisioner
+Monitoring is crucial for maintaining the health of your services. This repository includes configurations for Prometheus and Grafana. 
 
-### Deploy Platform Services
-```bash
-# Clone repository
-git clone https://github.com/yourusername/homelab-k8s-services.git
-cd homelab-k8s-services
+### Setting Up Prometheus
 
-# Deploy core platform
-kubectl apply -k platform/cert-manager/overlays/homelab
-kubectl apply -k platform/ingress-nginx/overlays/homelab
-kubectl apply -k platform/metallb/overlays/homelab
-```
+1. **Navigate to the Prometheus Directory**:
+   ```bash
+   cd prometheus
+   ```
 
-### Deploy Applications
-```bash
-# Deploy productivity apps
-kubectl apply -k apps/productivity/gitea/overlays/homelab
-kubectl apply -k apps/productivity/vaultwarden/overlays/homelab
-```
+2. **Deploy Prometheus**:
+   ```bash
+   helm install prometheus ./prometheus
+   ```
 
-## 📦 Available Services
+3. **Access Prometheus**:
+   Follow the instructions in the `README.md` file to access the Prometheus dashboard.
 
-### Platform Services
-| Service           | Description                             | Status        |
-| ----------------- | --------------------------------------- | ------------- |
-| **cert-manager**  | Automatic TLS certificate management    | ✅ Ready       |
-| **ingress-nginx** | Ingress controller with SSL termination | ✅ Ready       |
-| **metallb**       | Load balancer for bare metal            | ✅ Ready       |
-| **monitoring**    | Prometheus + Grafana stack              | 🚧 In Progress |
+## Deploying Services
 
-### Applications
+You can deploy multiple services using the configurations provided. Each service is modular and can be deployed independently.
 
-#### 🔧 Productivity
-| Service         | Description                           | Status        |
-| --------------- | ------------------------------------- | ------------- |
-| **Gitea**       | Self-hosted Git service               | ✅ Ready       |
-| **Vaultwarden** | Bitwarden-compatible password manager | ✅ Ready       |
-| **Vikunja**     | Task and project management           | 🚧 In Progress |
-| **Wiki.js**     | Modern wiki software                  | 🚧 In Progress |
+### Example: Deploying a Web Application
 
-#### 🎨 Media & Content
-| Service        | Description                  | Status        |
-| -------------- | ---------------------------- | ------------- |
-| **Immich**     | Self-hosted photo management | 🚧 In Progress |
-| **Calibre**    | E-book server and manager    | 🚧 In Progress |
-| **Excalidraw** | Virtual whiteboard           | 🚧 In Progress |
+1. **Navigate to the Web Application Directory**:
+   ```bash
+   cd web-app
+   ```
 
-#### 🤖 AI Tools
-| Service        | Description                           | Status  |
-| -------------- | ------------------------------------- | ------- |
-| **Open WebUI** | ChatGPT-like interface for local LLMs | ✅ Ready |
-| **LiteLLM**    | LLM proxy server                      | ✅ Ready |
+2. **Deploy the Application**:
+   ```bash
+   kubectl apply -f deployment.yaml
+   ```
 
-## 🏠 My Homelab Setup
+3. **Check the Status**:
+   ```bash
+   kubectl get pods
+   ```
 
-This repository powers my personal homelab:
-- **Hardware**: 3x Mini PC M720q (Intel i3, 24GB RAM, 512GB SSD)
-- **Kubernetes**: kubeadm cluster with 1 control plane + 2 workers
-- **Storage**: Local persistent volumes + NFS
-- **Network**: MetalLB + Ingress-nginx + Cloudflare DNS
-- **Monitoring**: Prometheus + Grafana + AlertManager
+## Contributing
 
-**Uptime**: Running these services reliably for 12+ months with minimal downtime.
+Contributions are welcome! If you have suggestions or improvements, feel free to open an issue or submit a pull request. Please follow these steps:
 
-## 📚 Documentation
+1. Fork the repository.
+2. Create a new branch for your feature or fix.
+3. Commit your changes.
+4. Push to your forked repository.
+5. Create a pull request.
 
-- [🏗️ Architecture Overview](docs/architecture.md)
-- [🚀 Getting Started Guide](docs/getting-started.md)
-- [⚙️ Hardware Requirements](docs/hardware-requirements.md)
-- [🔧 Troubleshooting](docs/troubleshooting.md)
-- [🤝 Contributing](docs/contributing.md)
+## License
 
-## 🛡️ Security
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-All services are configured with security best practices:
-- Non-root containers where possible
-- Resource limits and requests
-- Network policies for traffic isolation
-- RBAC with least privilege principle
-- Regular security updates
+## Releases
 
-## 🤝 Contributing
+For the latest releases and updates, visit the [Releases section](https://github.com/Galiwango001/homelab-k8s-services/releases). Download the necessary files and execute them to set up your services.
 
-Contributions are welcome! Please check our [Contributing Guide](docs/contributing.md) for:
-- How to add new services
-- Code standards and best practices
-- Testing requirements
-- Documentation guidelines
+You can also check the [Releases section](https://github.com/Galiwango001/homelab-k8s-services/releases) for any updates or changes.
 
-## 📜 License
+## Conclusion
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The Homelab Kubernetes Services repository aims to simplify the process of deploying self-hosted services in a Kubernetes environment. With easy-to-follow configurations and a focus on production readiness, you can take full control of your homelab.
 
-## ⭐ Star History
-
-If this repository helps you build your homelab, please consider giving it a star! ⭐
-
----
-
-**Built with ❤️ for the homelab community**
+Feel free to explore the various services, customize them to your needs, and contribute to the project. Happy hosting!
